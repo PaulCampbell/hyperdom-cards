@@ -2,7 +2,7 @@ const http = require('http')
 const express = require('express')
 const morgan = require('morgan')
 
-module.exports = function () {
+module.exports = function() {
   const app = express()
   app.use(morgan('dev'))
 
@@ -21,9 +21,14 @@ module.exports = function () {
     <title>My Hyperdom App</title>
   </head>
   <body>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="/dist/app.bundle.js"></script>
     <script type="text/javascript" src="/dist/registerServiceWorker.bundle.js"></script>
-    ${process.env.NODE_ENV !== 'production' ? '<script type="text/javascript" src="/dist/liveReload.bundle.js"></script>' : ''}
+    ${
+      process.env.NODE_ENV !== 'production'
+        ? '<script type="text/javascript" src="/dist/liveReload.bundle.js"></script>'
+        : ''
+    }
   </body>
 </html>
       `
@@ -40,7 +45,7 @@ if (!module.parent) {
 
   if (process.env.NODE_ENV !== 'production') {
     const LiveReload = require('./liveReload')
-    new LiveReload({server}).listen()
+    new LiveReload({ server }).listen()
   }
 
   server.listen(port, () => {
