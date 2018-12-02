@@ -5,16 +5,6 @@ const Hammer = require('hammerjs')
 
 class App {
   onload() {
-    this.setInitialState()
-  }
-
-  onadd() {
-    this.hammer = new Hammer(document.querySelector('#app'))
-    this.hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }))
-    this.hammer.on('pan', this.drag.bind(this))
-  }
-
-  setInitialState() {
     const firstcard = { background: 'red', name: 1 }
     this.cards = [firstcard, { background: 'green', name: 2 }, { background: 'blue', name: 3 }]
     this.activeCard = firstcard
@@ -23,7 +13,14 @@ class App {
     this.keepDisplay = 'hide'
   }
 
+  onadd() {
+    this.hammer = new Hammer(document.querySelector('#app'))
+    this.hammer.add(new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }))
+    this.hammer.on('pan', this.drag.bind(this))
+  }
+
   drag(ev) {
+    this.isBeingDragged = true
     const dragX_offset = ev.deltaX
     const dragY_offset = ev.deltaY
     let rotation = 4
@@ -46,6 +43,7 @@ class App {
   }
 
   release(ev) {
+    this.isBeingDragged = false
     this.keepDisplay = 'hide'
     this.discardDisplay = 'hide'
     if (Math.abs(ev.deltaX) > 300 / 3) {
@@ -81,29 +79,33 @@ class App {
       'div#app',
       h(
         'ul.card',
-        this.cards.map(card => {
-          return h(
-            'li',
-            {
-              class: card === this.activeCard ? 'active' : '',
-              style:
-                card === this.activeCard
-                  ? { '-webkit-transform': this.activeCardTransform }
-                  : { '-webkit-transform': this.getCardPositionStyle(0, 0, 0) }
-            },
-            h('h2', { style: { background: card.background } }, card.name),
-            h('div', {
-              class:
-                card === this.activeCard ? `${this.keepDisplay} keep action` : `hide keep action`
-            }),
-            h('div', {
-              class:
-                card === this.activeCard
-                  ? `${this.discardDisplay} discard action`
-                  : `hide discard action`
-            })
-          )
-        })
+        this.cards
+          .slice()
+          .reverse()
+          .map(card => {
+            return h(
+              'li',
+              {
+                class:
+                  card === this.activeCard ? `active${this.isBeingDragged ? ' drag' : ''}` : '',
+                style:
+                  card === this.activeCard
+                    ? { '-webkit-transform': this.activeCardTransform }
+                    : { '-webkit-transform': this.getCardPositionStyle(0, 0, 0) }
+              },
+              h('h2', { style: { background: card.background } }, card.name),
+              h('div', {
+                class:
+                  card === this.activeCard ? `${this.keepDisplay} keep action` : `hide keep action`
+              }),
+              h('div', {
+                class:
+                  card === this.activeCard
+                    ? `${this.discardDisplay} discard action`
+                    : `hide discard action`
+              })
+            )
+          })
       )
     )
   }

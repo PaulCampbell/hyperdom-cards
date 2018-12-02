@@ -1,0 +1,16 @@
+{
+  "short_name": "cards",
+  "name": "cards",
+  "icons": [
+    {
+      "src": "/images/monkey_400.png",
+      "type": "image/png",
+      "sizes": "400x400"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#3367D6",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#3367D6"
+}

@@ -9,7 +9,11 @@ module.exports = function() {
   app.get('/service-worker.js', (req, res) => {
     res.sendFile(`${process.cwd()}/browser/dist/serviceWorker.bundle.js`)
   })
+  app.get('manifest.json', (req, res) => {
+    res.sendFile(`${process.cwd()}/server/manifest.json`)
+  })
   app.use('/dist/', express.static(`${process.cwd()}/browser/dist/`))
+  app.use('/images/', express.static(`${process.cwd()}/browser/images/`))
 
   app.get('/', (req, res) => {
     res.type('html')
@@ -21,6 +25,7 @@ module.exports = function() {
     <title>My Hyperdom App</title>
   </head>
   <body>
+    <link rel="manifest" href="/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="/dist/app.bundle.js"></script>
     <script type="text/javascript" src="/dist/registerServiceWorker.bundle.js"></script>
